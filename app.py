@@ -44,18 +44,18 @@ class Tube(db.Model):
             "status": fields.String
         }
 
-tube_response = ns.model("TubeResponse", Tube.get_model())
+tube_info = ns.model("TubeInfo", Tube.get_model())
 
 
 @ns.route("/tubes")
 class Tubes(Resource):
-    @ns.marshal_list_with(tube_response)
+    @ns.marshal_list_with(tube_info)
     def get(self):
         tubes = db.session.query(Tube).filter(Tube.status == 'registered').all()
         return tubes
 
     @ns.expect(api.model('NewTube', {'patient_email': fields.String}), validate=True)
-    @ns.marshal_with(tube_response)
+    @ns.marshal_with(tube_info)
     def post(self):
         new_tube = Tube()
         new_tube.barcode = str(uuid.uuid4())
@@ -64,3 +64,15 @@ class Tubes(Resource):
         db.session.add(new_tube)
         db.session.commit()
         return new_tube
+
+    @ns.expect(tube_info)
+    @ns.marshal_with(tube_info)
+    def patch(self):
+        tube_inst = db.session.query(Tube).filter(Tube.barcode == api.payload['barcode']).one_or_none()
+        if not tube_inst:
+            return 404
+        else:
+            tube_inst.status = api.payload['status']
+            # ORM takes care of the save when you commit
+            db.session.commit()
+            return tube_inst
