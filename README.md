@@ -1,6 +1,8 @@
 
 
-## Notes
+## Notes and assumptions
+
+* Since the `Tube` has a FK relationship to a user, the POST to register a new tube needs to take a user email.
 
 
 ### Off-spec changes
