@@ -106,8 +106,5 @@ venv.bak/
 # IJ
 .idea/
 
-# VSCode
-.vscode/
-
 # not the database!
 example.sqlite
