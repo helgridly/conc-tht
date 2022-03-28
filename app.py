@@ -41,8 +41,7 @@ class Tube(db.Model):
     def get_model(cls):
         return {
             "barcode": fields.String,
-            "status": fields.String,
-            "patient_id": fields.Integer
+            "status": fields.String
         }
 
 tube_response = ns.model("TubeResponse", Tube.get_model())
@@ -50,8 +49,10 @@ tube_response = ns.model("TubeResponse", Tube.get_model())
 
 @ns.route("/tubes")
 class Tubes(Resource):
+    @ns.marshal_list_with(tube_response)
     def get(self):
-        return {"hello": "world"}
+        tubes = db.session.query(Tube).filter(Tube.status == 'registered').all()
+        return tubes
 
     @ns.expect(api.model('NewTube', {'patient_email': fields.String}), validate=True)
     @ns.marshal_with(tube_response)
