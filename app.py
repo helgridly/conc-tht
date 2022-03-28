@@ -4,6 +4,7 @@ from flask_restx import Api, Resource, fields
 from flask_sqlalchemy import SQLAlchemy
 
 import uuid
+import enum
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///example.sqlite"
@@ -30,11 +31,25 @@ class Patient(db.Model):
             db.session.commit()
         return inst
 
+@enum.unique
+class TubeStatus(enum.Enum):
+    registered = 10
+    received = 20
+    positive = 30
+    negative = 40
+    indeterminate = 50
+
+    @classmethod
+    def from_string(cls, name: str):
+        try:
+            return TubeStatus[name]
+        except KeyError:
+            raise NotImplementedError(f"Unknown TubeStatus enum {name}")
 
 class Tube(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     barcode = db.Column(db.String, unique=True, nullable=False)
-    status = db.Column(db.String, nullable=False)
+    status = db.Column(db.Enum(TubeStatus), nullable=False)
     patient_id = db.Column(db.Integer, db.ForeignKey(Patient.id), nullable=False)
 
     @classmethod
