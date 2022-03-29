@@ -25,6 +25,10 @@ api = Api(routes, version='0.1', title='Tubes Service',
 
 ns = api.namespace('/', description='tube handling')
 
+###
+### database
+###
+
 class Patient(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String, unique=True, nullable=False)
@@ -66,13 +70,21 @@ class Tube(db.Model):
             "status": fields.String(enum = [e.name for e in TubeStatus])
         }
 
+###
+### swagger models
+###
+
 tube_info = ns.model("TubeInfo", Tube.get_model())
 new_tube = ns.model('NewTube', {
-    # this bonkers regex matches against emails, per https://www.emailregex.com/
+    # this regex matches against emails, per https://www.emailregex.com/
     'patient_email': fields.String(
         pattern = r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)",
         example = "test@example.com"
     )})
+
+###
+### routes
+###
 
 @ns.route("/tubes")
 @ns.response(400, 'Validation Error')
@@ -106,7 +118,7 @@ class Tubes(Resource):
             return 404
         else:
             tube_inst.status = api.payload['status']
-            # ORM takes care of the save when you commit
+            # ORM takes care of saving tube_inst when you commit
             db.session.commit()
             return tube_inst
 
