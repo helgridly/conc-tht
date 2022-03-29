@@ -9,10 +9,10 @@ import enum
 db = SQLAlchemy()
 routes = flask.Blueprint('tube-service', __name__)
 
-def create_app():
+def create_app(dburl="sqlite:///example.sqlite"):
     app = Flask(__name__)
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # hush sqla warning
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///example.sqlite"
+    app.config["SQLALCHEMY_DATABASE_URI"] = dburl
     app.config["RESTX_MASK_SWAGGER"] = False  # disable X-Fields header in swagger
 
     db.init_app(app)
@@ -20,7 +20,7 @@ def create_app():
     return app
 
 api = Api(routes, version='0.1', title='Tubes Service',
-        description='tubes service',
+        description='Concentric tube management',
         validate=True) # validate all payloads
 
 ns = api.namespace('/', description='tube handling')
