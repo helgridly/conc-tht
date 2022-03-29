@@ -1,6 +1,8 @@
 
 tasks:
   - init: |
+      python -m virtualenv venv
+      source venv/bin/activate
       pip install --no-cache-dir -r requirements.txt
       python -c "from app import db; db.create_all()"
     command: FLASK_ENV=development flask run

@@ -108,3 +108,6 @@ venv.bak/
 
 # not the database!
 example.sqlite
+
+# not the virtualenv either
+venv/
