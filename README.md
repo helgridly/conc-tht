@@ -8,7 +8,7 @@ Will drop you into a VSCode browser and start the app for you. Just click the li
 
 https://gitpod.io/#https://github.com/helgridly/conc-tht
 
-VSCode will give a toast notification in the bottom-right corner saying the app opened a port. Hit "Open Browser" and it'll pop open another tab with Swagger in it.
+VSCode will give a toast notification in the bottom-right corner saying a service is available on port 5000. Hit "Open Browser" and it'll pop open another tab with Swagger in it.
 
 ## Locally
 
