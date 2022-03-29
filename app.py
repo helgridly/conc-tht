@@ -8,6 +8,7 @@ import enum
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///example.sqlite"
+app.config["RESTX_MASK_SWAGGER"] = False  # disable X-Fields header in swagger
 db = SQLAlchemy(app)
 
 routes = flask.Blueprint('tube-service', __name__)
@@ -38,6 +39,9 @@ class TubeStatus(enum.Enum):
     positive = 30
     negative = 40
     indeterminate = 50
+
+    def __str__(self):
+        return self.name
 
     @classmethod
     def from_string(cls, name: str):
