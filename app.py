@@ -6,23 +6,24 @@ from flask_sqlalchemy import SQLAlchemy
 import uuid
 import enum
 
-# TODO: might want to become create_app() for testing
-# crib: https://github.com/broadinstitute/import-service/blob/f5992390e520c7f3777fe75aa3641ce7ce6d6fd7/app/__init__.py#L5
-# crib: https://github.com/broadinstitute/import-service/blob/f5992390e520c7f3777fe75aa3641ce7ce6d6fd7/app/server/routes.py
-app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///example.sqlite"
-app.config["RESTX_MASK_SWAGGER"] = False  # disable X-Fields header in swagger
-
+db = SQLAlchemy()
 routes = flask.Blueprint('tube-service', __name__)
+
+def create_app():
+    app = Flask(__name__)
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # hush sqla warning
+    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///example.sqlite"
+    app.config["RESTX_MASK_SWAGGER"] = False  # disable X-Fields header in swagger
+
+    db.init_app(app)
+    app.register_blueprint(routes)
+    return app
+
 api = Api(routes, version='0.1', title='Tubes Service',
         description='tubes service',
         validate=True) # validate all payloads
 
 ns = api.namespace('/', description='tube handling')
-app.register_blueprint(routes)
-
-db = SQLAlchemy(app)
-
 
 class Patient(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -108,3 +109,5 @@ class Tubes(Resource):
             # ORM takes care of the save when you commit
             db.session.commit()
             return tube_inst
+
+app = create_app()

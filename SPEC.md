@@ -43,8 +43,8 @@ python3 -m pip install --no-cache-dir -r requirements.txt
 2. create the database
 In the root directory start a python3 interpreter and run:
 ```bash
->>> from app import db
->>> db.create_all()
+>>> from app import db, create_app
+>>> db.create_all(app=create_app())
 ```
 
 3. run the web server

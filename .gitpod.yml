@@ -4,7 +4,7 @@ tasks:
       python -m virtualenv venv
       source venv/bin/activate
       pip install --no-cache-dir -r requirements.txt
-      python -c "from app import db; db.create_all()"
+      python -c "from app import db, create_app; db.create_all(app=create_app())"
       deactivate
     command: |
       source venv/bin/activate
