@@ -23,7 +23,7 @@ api = Api(routes, version='0.1', title='Tubes Service',
         description='Concentric tube management',
         validate=True) # validate all payloads
 
-ns = api.namespace('/', description='tube handling')
+ns = api.namespace('tubes', description='tube handling')
 
 ###
 ### database
@@ -86,7 +86,7 @@ new_tube = ns.model('NewTube', {
 ### routes
 ###
 
-@ns.route("/tubes")
+@ns.route("")
 @ns.response(400, 'Validation Error')
 class Tubes(Resource):
     @ns.marshal_list_with(tube_info)
